@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport"
+    content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    
+    <script type="text/javascript">
+
+    window.uexOnload = function(type){
+        uexPopTipsView.onItemSelected = onItemSelected;
+    }
+    function openPop(type){
+        if(type == 1){
+            uexPopTipsView.open("");
+        }else{
+            var jsonData = '{"centerX": 500,"centerY": 500,"bgColor":"#d0ff0000","textNColor":"#FFFFFF","textHColor":"#BBBBBB","textSize":20,"dividerColor":"#b0cccccc","labels":["复制","复","复制啊","复制复制"]}';
+            uexPopTipsView.open(jsonData);
+        }
+    }
+    function onItemSelected(opId, dataType, data){
+        uexPopTipsView.close();
+        alert(data);
+    }
+    function openWin(){
+        uexWindow.open("aaaa", 0, "uexPopTipsView.html", 0, 0, 0, 0);
+    }
+    </script>
+</head>
+
+<body>
+    <div class="tit">uexPopTipsView</div>
+    <div class="conbor">
+        <div class="consj">
+            <input class="btn" type="button" value="open-default" onclick="openPop(1);"><br>
+            <input class="btn" type="button" value="open-red" onclick="openPop(2);"><br>
+            <input class="btn" type="button" value="close" onclick="uexPopTipsView.close();"><br>
+        </div>
+    </div>
+</body>
+</html>
