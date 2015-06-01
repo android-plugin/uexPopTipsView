@@ -2,7 +2,6 @@ package org.zywx.wbpalmstar.plugin.uexpoptipsview.util;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.view.View;
@@ -14,11 +13,11 @@ public class TriangleView extends View {
     private Path path;
     private int mRadius;
 
-    public TriangleView(Context context, String color, int radius) {
+    public TriangleView(Context context, int color, int radius) {
         super(context);
         mRadius = radius;
         this.paint.setAntiAlias(true);
-        this.paint.setColor(Color.parseColor(color));
+        this.paint.setColor(color);
         this.paint.setStyle(Paint.Style.FILL);
         this.path = new Path();
     }

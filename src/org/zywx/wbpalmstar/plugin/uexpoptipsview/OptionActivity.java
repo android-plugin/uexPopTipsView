@@ -9,11 +9,9 @@ import org.zywx.wbpalmstar.plugin.uexpoptipsview.util.TriangleView;
 
 import android.app.Activity;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.FontMetrics;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -29,13 +27,13 @@ public class OptionActivity extends Activity {
     private static final int TIP_BG_ID = 1;
     private static OnPopItemSelectedListener mListener;
     private RelativeLayout bgLayout;
-    private String mBgColor;
+    private int mBgColor;
     private int mRadius;
     private String[] mStringData;
     private ColorStateList mColorList;
-    private String mTextColor;
-    private String mHightlightTextColor;
-    private String mDividerColor;
+    private int mTextColor;
+    private int mHightlightTextColor;
+    private int mDividerColor;
     private int mDividerWidth = 1;
     private int mTextSize;
     private int mTextPadding;
@@ -68,10 +66,10 @@ public class OptionActivity extends Activity {
         mBorderMargin = EUExUtil.dipToPixels(5);
         mContentHeight = EUExUtil.dipToPixels(50);
         mColorList = PopUtils.createColorStateList(
-                Color.parseColor(mTextColor),
-                Color.parseColor(mHightlightTextColor),
-                Color.parseColor(mHightlightTextColor),
-                Color.parseColor(mTextColor));
+                mTextColor,
+                mHightlightTextColor,
+                mHightlightTextColor,
+                mTextColor);
         setContentView(EUExUtil.getResLayoutID("plugin_uexpoptipsview_bg_layout"));
         bgLayout = (RelativeLayout) findViewById(
                 EUExUtil.getResIdID("plugin_uexpoptipsview_bg_rl"));
@@ -114,7 +112,7 @@ public class OptionActivity extends Activity {
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(mDividerWidth,
                         LayoutParams.MATCH_PARENT);
                 line.setLayoutParams(lp);
-                line.setBackgroundColor(Color.parseColor(mDividerColor));
+                line.setBackgroundColor(mDividerColor);
                 tipsBg.addView(line);
                 totalWidth += mDividerWidth;
                 //int textH1 = getTextViewHeight(line);
@@ -167,13 +165,6 @@ public class OptionActivity extends Activity {
         paint.setTextSize(fontSize);
         FontMetrics fm = paint.getFontMetrics();
         return (int) Math.ceil(fm.descent - fm.ascent) + 2;
-    }
-    
-    private int getTextViewHeight(TextView pTextView) {
-        Layout layout = pTextView.getLayout();
-        int desired = layout.getLineTop(pTextView.getLineCount());
-        int padding = pTextView.getCompoundPaddingTop() + pTextView.getCompoundPaddingBottom();
-        return desired + padding;
     }
 
 }

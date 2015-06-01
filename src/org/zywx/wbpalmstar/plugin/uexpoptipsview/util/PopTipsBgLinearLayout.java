@@ -2,7 +2,6 @@ package org.zywx.wbpalmstar.plugin.uexpoptipsview.util;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
@@ -12,7 +11,7 @@ public class PopTipsBgLinearLayout extends LinearLayout {
     private ShapeDrawable bgDrawable;
     private Paint paint;
 
-    public PopTipsBgLinearLayout(Context context, String color, int radius) {
+    public PopTipsBgLinearLayout(Context context, int color, int radius) {
         super(context);
         setWillNotDraw(false);
         this.paint = new Paint();
@@ -28,7 +27,7 @@ public class PopTipsBgLinearLayout extends LinearLayout {
         arrayOfFloat[6] = radius;
         arrayOfFloat[7] = radius;
         this.bgDrawable = new ShapeDrawable(new RoundRectShape(arrayOfFloat, null, null));
-        this.bgDrawable.getPaint().setColor(Color.parseColor(color));
+        this.bgDrawable.getPaint().setColor(color);
     }
 
     @Override

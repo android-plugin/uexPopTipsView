@@ -1,26 +1,24 @@
 package org.zywx.wbpalmstar.plugin.uexpoptipsview;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.zywx.wbpalmstar.engine.EBrowserView;
-import org.zywx.wbpalmstar.engine.universalex.EUExBase;
-import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
-import org.zywx.wbpalmstar.plugin.uexpoptipsview.util.PopTipsBean;
-
 import android.app.ActivityGroup;
 import android.app.LocalActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
 import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.zywx.wbpalmstar.engine.DataHelper;
+import org.zywx.wbpalmstar.engine.EBrowserView;
+import org.zywx.wbpalmstar.engine.universalex.EUExBase;
+import org.zywx.wbpalmstar.plugin.uexpoptipsview.util.PopTipsBean;
 
 public class EUExPopTipsView extends EUExBase {
 
@@ -29,10 +27,10 @@ public class EUExPopTipsView extends EUExBase {
     private static final int MSG_OPEN = 0;
     private static final int MSG_CLOSE = 1;
     private static final String TAG_OPTIONACTIVITY = "OptionActivity";
+    private static final String RESULT_INDEX = "index";
     private Context mContext;
     public static LocalActivityManager mgr;
     private OnPopItemSelectedListener mListener;
-    private PopTipsBean mBean;
     private static boolean mIsOpen = false;
 
     public EUExPopTipsView(Context context, EBrowserView view) {
@@ -44,11 +42,21 @@ public class EUExPopTipsView extends EUExBase {
             
             @Override
             public void onItemSelected(int index) {
-                jsCallback(CALLBACK_ONSELECTED, 0, EUExCallback.F_C_INT, index);
+                JSONObject json = new JSONObject();
+                try {
+                    json.put(RESULT_INDEX, index);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                callBackPluginJs(CALLBACK_ONSELECTED, json.toString());
             }
         };
     }
-
+    private void callBackPluginJs(String methodName, String jsonData){
+        String js = SCRIPT_HEADER + "if(" + methodName + "){"
+                + methodName + "('" + jsonData + "');}";
+        onCallback(js);
+    }
     @Override
     protected boolean clean() {
         close(null);
@@ -74,11 +82,11 @@ public class EUExPopTipsView extends EUExBase {
             closeMsg();
         }
         String jsonData = params[0];
-        parsePopTipsData(jsonData);
+        PopTipsBean dataVO = DataHelper.gson.fromJson(jsonData, PopTipsBean.class);
         Intent intent = new Intent();
         intent.setClass(mContext, OptionActivity.class);
         OptionActivity.setOnPopSelectedListener(mListener);
-        OptionActivity.setDataBean(mBean);
+        OptionActivity.setDataBean(dataVO);
         Window window = mgr.startActivity(TAG_OPTIONACTIVITY, intent);
         View popMenuView = window.getDecorView();
         popMenuView.requestFocus();
@@ -142,44 +150,6 @@ public class EUExPopTipsView extends EUExBase {
         default:
             break;
         }
-    }
-
-    private void parsePopTipsData(String jsonData) {
-        try {
-            mBean = new PopTipsBean();
-            JSONObject jsonObject = new JSONObject(jsonData);
-            JSONArray jsonArray = jsonObject.getJSONArray(PopTipsBean.TAG_LABELS);
-            String[] labels = new String[jsonArray.length()];
-            for (int i = 0; i < labels.length; i++) {
-                labels[i] = jsonArray.optString(i);
-            }
-            mBean.setLabels(labels);
-            if(jsonObject.has(PopTipsBean.TAG_BG_COLOR)){
-                mBean.setBgColor(jsonObject.getString(PopTipsBean.TAG_BG_COLOR));
-            }
-            if(jsonObject.has(PopTipsBean.TAG_CENTER_X)){
-                mBean.setCenterX(jsonObject.getInt(PopTipsBean.TAG_CENTER_X));
-            }
-            if(jsonObject.has(PopTipsBean.TAG_CENTER_Y)){
-                mBean.setCenterY(jsonObject.getInt(PopTipsBean.TAG_CENTER_Y));
-            }
-            if(jsonObject.has(PopTipsBean.TAG_DIVIDER_COLOR)){
-                mBean.setDividerColor(jsonObject.getString(PopTipsBean.TAG_DIVIDER_COLOR));
-            }
-            if(jsonObject.has(PopTipsBean.TAG_TEXT_H_COLOR)){
-                mBean.setTextHColor(jsonObject.getString(PopTipsBean.TAG_TEXT_H_COLOR));
-            }
-            if(jsonObject.has(PopTipsBean.TAG_TEXT_N_COLOR)){
-                mBean.setTextNColor(jsonObject.getString(PopTipsBean.TAG_TEXT_N_COLOR));
-            }
-            if(jsonObject.has(PopTipsBean.TAG_TEXT_SIZE)){
-                mBean.setTextSize(jsonObject.getInt(PopTipsBean.TAG_TEXT_SIZE));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            errorCallback(0, 0, "error params!");
-        }
-        
     }
 
     public interface OnPopItemSelectedListener{
