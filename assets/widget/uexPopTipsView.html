@@ -13,18 +13,30 @@
     }
     function openPop(type){
         if(type == 1){
-            uexPopTipsView.open("");
+            var jsonData = {
+                centerX:400,
+                centerY:1000,
+                labels:["复制","粘贴","删除"]
+            };
+            uexPopTipsView.open(JSON.stringify(jsonData));
         }else{
-            var jsonData = '{"centerX": 500,"centerY": 500,"bgColor":"#d0ff0000","textNColor":"#FFFFFF","textHColor":"#BBBBBB","textSize":20,"dividerColor":"#b0cccccc","labels":["复制","复","复制啊","复制复制"]}';
-            uexPopTipsView.open(jsonData);
+            var jsonData = {
+                centerX:500,
+                centerY:1000,
+                bgColor:"#d0ff0000",
+                textNColor:"#FFFFFF",
+                textHColor:"#BBBBBB",
+                textSize:20,
+                dividerColor:"#b0cccccc",
+                labels:["复制","粘贴","回到首页","发消息"]
+            };
+            uexPopTipsView.open(JSON.stringify(jsonData));
         }
     }
-    function onItemSelected(opId, dataType, data){
+    function onItemSelected(data){
+        var index = JSON.parse(data).index;
+        alert("点击了第" + (index + 1) + "个元素");
         uexPopTipsView.close();
-        alert(data);
-    }
-    function openWin(){
-        uexWindow.open("aaaa", 0, "uexPopTipsView.html", 0, 0, 0, 0);
     }
     </script>
 </head>

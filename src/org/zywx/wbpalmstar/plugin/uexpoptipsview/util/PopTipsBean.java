@@ -1,5 +1,7 @@
 package org.zywx.wbpalmstar.plugin.uexpoptipsview.util;
 
+import org.zywx.wbpalmstar.base.BUtility;
+
 public class PopTipsBean {
     
     public static String TAG_CENTER_X = "centerX";
@@ -11,8 +13,8 @@ public class PopTipsBean {
     public static String TAG_DIVIDER_COLOR = "dividerColor";
     public static String TAG_LABELS = "labels";
 
-    private int centerX = 400;
-    private int centerY = 400;
+    private double centerX = 400;
+    private double centerY = 400;
     private String bgColor = "#90000000";
     private String TextNColor = "#ffffff";
     private String textHColor = "#0000C6";
@@ -20,31 +22,34 @@ public class PopTipsBean {
     private String dividerColor = "#636363";
     private String[] labels = {"复制","粘贴","删除"};
     public int getCenterX() {
-        return centerX;
-    }
-    public void setCenterX(int centerX) {
-        this.centerX = centerX;
+        return (int) centerX;
     }
     public int getCenterY() {
-        return centerY;
+        return (int) centerY;
     }
-    public void setCenterY(int centerY) {
+
+    public void setCenterX(double centerX) {
+        this.centerX = centerX;
+    }
+
+    public void setCenterY(double centerY) {
         this.centerY = centerY;
     }
-    public String getBgColor() {
-        return bgColor;
+
+    public int getBgColor() {
+        return BUtility.parseColor(bgColor);
     }
     public void setBgColor(String bgColor) {
         this.bgColor = bgColor;
     }
-    public String getTextNColor() {
-        return TextNColor;
+    public int getTextNColor() {
+        return BUtility.parseColor(TextNColor);
     }
     public void setTextNColor(String textNColor) {
         TextNColor = textNColor;
     }
-    public String getTextHColor() {
-        return textHColor;
+    public int getTextHColor() {
+        return BUtility.parseColor(textHColor);
     }
     public void setTextHColor(String textHColor) {
         this.textHColor = textHColor;
@@ -55,8 +60,8 @@ public class PopTipsBean {
     public void setTextSize(int textSize) {
         this.textSize = textSize;
     }
-    public String getDividerColor() {
-        return dividerColor;
+    public int getDividerColor() {
+        return BUtility.parseColor(dividerColor);
     }
     public void setDividerColor(String dividerColor) {
         this.dividerColor = dividerColor;
