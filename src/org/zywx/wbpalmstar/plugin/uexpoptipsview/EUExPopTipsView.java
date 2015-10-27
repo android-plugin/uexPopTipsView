@@ -1,15 +1,11 @@
 package org.zywx.wbpalmstar.plugin.uexpoptipsview;
 
-import android.app.ActivityGroup;
-import android.app.LocalActivityManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
@@ -23,23 +19,20 @@ import org.zywx.wbpalmstar.plugin.uexpoptipsview.util.PopTipsBean;
 public class EUExPopTipsView extends EUExBase {
 
     private static final String DATA_PARAMS = "data_params";
-    private static final String CALLBACK_ONSELECTED = "uexPopTipsView.onItemSelected";
+    private static final String CALLBACK_ON_SELECTED = "uexPopTipsView.onItemSelected";
     private static final int MSG_OPEN = 0;
     private static final int MSG_CLOSE = 1;
-    private static final String TAG_OPTIONACTIVITY = "OptionActivity";
     private static final String RESULT_INDEX = "index";
     private Context mContext;
-    public static LocalActivityManager mgr;
     private OnPopItemSelectedListener mListener;
     private static boolean mIsOpen = false;
+    private OptionView popMenuView;
 
     public EUExPopTipsView(Context context, EBrowserView view) {
         super(context, view);
         mContext = context;
-        mgr = ((ActivityGroup) mContext)
-                .getLocalActivityManager();
         mListener = new OnPopItemSelectedListener() {
-            
+
             @Override
             public void onItemSelected(int index) {
                 JSONObject json = new JSONObject();
@@ -48,7 +41,7 @@ public class EUExPopTipsView extends EUExBase {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                callBackPluginJs(CALLBACK_ONSELECTED, json.toString());
+                callBackPluginJs(CALLBACK_ON_SELECTED, json.toString());
             }
         };
     }
@@ -83,12 +76,8 @@ public class EUExPopTipsView extends EUExBase {
         }
         String jsonData = params[0];
         PopTipsBean dataVO = DataHelper.gson.fromJson(jsonData, PopTipsBean.class);
-        Intent intent = new Intent();
-        intent.setClass(mContext, OptionActivity.class);
-        OptionActivity.setOnPopSelectedListener(mListener);
-        OptionActivity.setDataBean(dataVO);
-        Window window = mgr.startActivity(TAG_OPTIONACTIVITY, intent);
-        View popMenuView = window.getDecorView();
+        if (dataVO == null) return;
+        popMenuView = new OptionView(mContext, dataVO, mListener);
         popMenuView.requestFocus();
         popMenuView.setFocusable(true);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
@@ -107,10 +96,8 @@ public class EUExPopTipsView extends EUExBase {
     
     private void closeMsg(){
         if (mIsOpen) {
-            Window window = mgr.destroyActivity(TAG_OPTIONACTIVITY, true);
-            if (window != null) {
-                View view = window.getDecorView();
-                removeViewFromCurrentWindow(view);
+            if (popMenuView != null) {
+                removeViewFromCurrentWindow(popMenuView);
             }
             mIsOpen = false;
         }
